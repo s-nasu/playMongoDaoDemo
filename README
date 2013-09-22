@@ -1,3 +1,71 @@
+0. 前書き
+
+このプロジェクトは、playMongoDemo をフォークして morphia の DAO を使用する様に拡張しています。
+
+Play Framework 2 （java）で mongodb のドライバを使用しDAOを通じ、MongoDBの操作を行います。
+Play Framework 2  と MongoDBがインストールと設定が完了している事を前提に話を進めます。
+
+動作させるのに必要なモジュールは mongodb-java-driver と morphia jarです。  
+playMongoDemo の説明にもありますが、project/Build.scala に 記述に従い、最初にプロジェクトをロードした時にモジュールは読み込まれます。
+
+1. MongoDBの接続情報について
+
+conf/application.conf に 接続情報を 記述します。
+
+storage.api.default.url はホスト名を、
+storage.api.default.portはポート番号を、
+storage.api.default.db は データベース名を、
+
+記述します。
+
+一例は次の通りです
+
+====
+storage.api.default.url="127.0.0.1"
+storage.api.default.db="test"
+storage.api.default.port=27017
+====
+
+2. モデルクラスの追加について
+
+models 以下の Group を例に挙げて説明します。
+
+- アノテーション @Entity 
+
+@Entity とするとクラス名が、コレクション名として使用されますが、コレクションの名前を指定したいときは @Entity("groups") の様にクラス名の前に記述します。
+そうすると、 Group が使用するコレクションは groups とする事が出来ます。
+
+- MongoDBの主キー 
+
+次の様に指定します。必ず使うと思いますので id を指定した共通モデルクラス BaseModel クラスを用意しても良いかもしれません。
+
+@Id
+public ObjectId id;
+
+3. DAO の追加について
+
+dao.BasicDAO を継承します。GroupDAO を例にあげておきます。
+
+======
+
+package dao;
+
+import java.net.UnknownHostException;
+
+import models.Group;
+
+import dao.BasicDAO;
+
+import org.bson.types.ObjectId;
+
+public class GroupDAO extends BasicDAO<Group, ObjectId> {
+	public GroupDAO() throws NumberFormatException, UnknownHostException {
+		super();
+	}
+}
+
+========
+
 This app is used to show how to connect mongodb in play 2.0.4 framework via morphia.
 
 PS:Please inspect these three files, 
