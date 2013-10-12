@@ -1,79 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
 <html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Playmongodaodemo : " />
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <title>Playmongodaodemo</title>
+  <meta name="description" content="">
 
-    <title>Playmongodaodemo</title>
-  </head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <body>
+</head>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/s-nasu/playMongoDaoDemo">View on GitHub</a>
+<body>
 
-          <h1 id="project_title">Playmongodaodemo</h1>
-          <h2 id="project_tagline"></h2>
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Playmongodaodemo</h1>
+    </header>
+    <div id="container">
+      <p class="tagline"></p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/s-nasu/playMongoDaoDemo/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/s-nasu/playMongoDaoDemo/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/s-nasu/playMongoDaoDemo" class="code">View Playmongodaodemo on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h2>
+<a name="%E5%89%8D%E6%9B%B8%E3%81%8D" class="anchor" href="#%E5%89%8D%E6%9B%B8%E3%81%8D"><span class="octicon octicon-link"></span></a>前書き</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/s-nasu/playMongoDaoDemo/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/s-nasu/playMongoDaoDemo/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+<p>このプロジェクトは、playMongoDemo をフォークして morphia の DAO を使用する様に拡張しています。</p>
+
+<p>Play Framework 2 （java）で mongodb のドライバを使用しDAOを通じ、MongoDBの操作を行います。
+Play Framework 2  と MongoDBがインストールと設定が完了している事を前提に話を進めます。</p>
+
+<p>動作させるのに必要なモジュールは mongodb-java-driver と morphia jarです。<br>
+playMongoDemo の説明にもありますが、project/Build.scala に 記述に従い、最初にプロジェクトをロードした時にモジュールは読み込まれます。</p>
+
+<h2>
+<a name="mongodb%E3%81%AE%E6%8E%A5%E7%B6%9A%E6%83%85%E5%A0%B1%E3%81%AE%E8%A8%AD%E5%AE%9A" class="anchor" href="#mongodb%E3%81%AE%E6%8E%A5%E7%B6%9A%E6%83%85%E5%A0%B1%E3%81%AE%E8%A8%AD%E5%AE%9A"><span class="octicon octicon-link"></span></a>MongoDBの接続情報の設定</h2>
+
+<p>conf/application.conf に 接続情報を 記述します。</p>
+
+<p>storage.api.default.url はホスト名を、
+storage.api.default.portはポート番号を、
+storage.api.default.db は データベース名を、</p>
+
+<p>記述します。</p>
+
+<p>一例は次の通りです</p>
+
+<pre>
+storage.api.default.url="127.0.0.1"
+storage.api.default.db="test"
+storage.api.default.port=27017
+</pre>
+
+<h2>
+<a name="%E3%83%A2%E3%83%87%E3%83%AB%E3%82%AF%E3%83%A9%E3%82%B9%E3%81%AE%E8%BF%BD%E5%8A%A0%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" class="anchor" href="#%E3%83%A2%E3%83%87%E3%83%AB%E3%82%AF%E3%83%A9%E3%82%B9%E3%81%AE%E8%BF%BD%E5%8A%A0%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><span class="octicon octicon-link"></span></a>モデルクラスの追加について</h2>
+
+<p>models 以下の Group を例に挙げて説明します。</p>
+
+<h3>
+<a name="%E3%82%A2%E3%83%8E%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3-entity" class="anchor" href="#%E3%82%A2%E3%83%8E%E3%83%86%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3-entity"><span class="octicon octicon-link"></span></a>アノテーション <a href="https://github.com/Entity" class="user-mention">@Entity</a>
+</h3>
+
+<p><a href="https://github.com/Entity" class="user-mention">@Entity</a> とするとクラス名が、コレクション名として使用されますが、コレクションの名前を指定したいときは <a href="https://github.com/Entity" class="user-mention">@Entity</a>("groups") の様にクラス名の前に記述します。
+そうすると、 Group が使用するコレクションは groups とする事が出来ます。</p>
+
+<h3>
+<a name="mongodb%E3%81%AE%E4%B8%BB%E3%82%AD%E3%83%BC" class="anchor" href="#mongodb%E3%81%AE%E4%B8%BB%E3%82%AD%E3%83%BC"><span class="octicon octicon-link"></span></a>MongoDBの主キー</h3>
+
+<p>次の様に指定します。必ず使うと思いますので id を指定した共通モデルクラス BaseModel クラスを用意しても良いかもしれません。</p>
+
+<pre>
+@Id
+public ObjectId id;
+</pre>
+
+<h2>
+<a name="dao-%E3%81%AE%E8%BF%BD%E5%8A%A0%E6%96%B9%E6%B3%95" class="anchor" href="#dao-%E3%81%AE%E8%BF%BD%E5%8A%A0%E6%96%B9%E6%B3%95"><span class="octicon octicon-link"></span></a>DAO の追加方法</h2>
+
+<p>dao.BasicDAO を継承します。GroupDAO を例にあげます。</p>
+
+<pre>
+package dao;
+
+import java.net.UnknownHostException;
+
+import models.Group;
+
+import dao.BasicDAO;
+
+import org.bson.types.ObjectId;
+
+public class GroupDAO extends BasicDAO {
+    public GroupDAO() throws NumberFormatException, UnknownHostException {
+        super();
+    }
+}
+</pre>
+        </article>
+      </div>
     </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/s-nasu" class="avatar"><img src="https://2.gravatar.com/avatar/ebbaed0ed4da5bcbe756d07969f1d99c?d=https%3A%2F%2Fidenticons.github.com%2F3dfec803b200b32f08d7acad43a6f5ae.png&amp;s=30" width="48" height="48"/></a> <a href="https://github.com/s-nasu">s-nasu</a> maintains <a href="https://github.com/s-nasu/playMongoDaoDemo">Playmongodaodemo</a></p>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/s-nasu/playMongoDaoDemo/tarball/master" class="tar">tar</a><a href="https://github.com/s-nasu/playMongoDaoDemo/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Playmongodaodemo maintained by <a href="https://github.com/s-nasu">s-nasu</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
-  </body>
+  
+</body>
 </html>
